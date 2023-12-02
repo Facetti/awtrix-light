@@ -3,25 +3,23 @@
 #include <Arduino.h>
 #include <FastLED.h>
 
-#define DEBUG
-
 #ifdef DEBUG
-#define DEBUG_PRINTLN(x)    \
-  {                         \
-    Serial.print("[");      \
-    Serial.print(millis()); \
-    Serial.print("] [");    \
-    Serial.print(__func__); \
-    Serial.print("]: ");    \
-    Serial.println(x);      \
-  }
-#define DEBUG_PRINTF(format, ...)                                                        \
-  {                                                                                      \
-    String formattedMessage = "[" + String(millis()) + "] [" + String(__func__) + "]: "; \
-    Serial.print(formattedMessage);                                                      \
-    Serial.printf(format, ##__VA_ARGS__);                                                \
-    Serial.println();                                                                    \
-  }
+#define DEBUG_PRINTLN(x)        \
+    {                           \
+        Serial.print("[");      \
+        Serial.print(millis()); \
+        Serial.print("] [");    \
+        Serial.print(__func__); \
+        Serial.print("]: ");    \
+        Serial.println(x);      \
+    }
+#define DEBUG_PRINTF(format, ...)                                                            \
+    {                                                                                        \
+        String formattedMessage = "[" + String(millis()) + "] [" + String(__func__) + "]: "; \
+        Serial.print(formattedMessage);                                                      \
+        Serial.printf(format, ##__VA_ARGS__);                                                \
+        Serial.println();                                                                    \
+    }
 #else
 #define DEBUG_PRINTLN(x)
 #define DEBUG_PRINTF(format, ...)
@@ -48,6 +46,7 @@ extern bool SHOW_BAT;
 extern String HA_PREFIX;
 extern bool SHOW_TEMP;
 extern bool SHOW_HUM;
+extern bool SHOW_CNT;
 extern bool SHOW_SECONDS;
 extern bool SHOW_WEEKDAY;
 extern int8_t TRANS_EFFECT;
@@ -67,6 +66,7 @@ extern bool DFPLAYER_ACTIVE;
 extern float CURRENT_TEMP;
 extern float CURRENT_HUM;
 extern float CURRENT_LUX;
+extern String CURRENT_CNT;
 extern uint16_t LDR_RAW;
 extern String CURRENT_APP;
 extern int BACKGROUND_EFFECT;
@@ -88,7 +88,7 @@ extern String TIME_FORMAT;
 extern String DATE_FORMAT;
 extern bool START_ON_MONDAY;
 extern bool IS_CELSIUS;
-#ifndef ULANZI    
+#ifndef ULANZI
 #define TEMP_SENSOR_TYPE_NONE 0
 #define TEMP_SENSOR_TYPE_BME280 1
 #define TEMP_SENSOR_TYPE_HTU21DF 2
@@ -130,13 +130,13 @@ extern uint32_t DATE_COLOR;
 extern uint32_t BAT_COLOR;
 extern uint32_t TEMP_COLOR;
 extern uint32_t HUM_COLOR;
+extern uint32_t CNT_COLOR;
 extern bool ARTNET_MODE;
 extern bool MOODLIGHT_MODE;
 extern double movementFactor;
 extern uint8_t MIN_BRIGHTNESS;
 extern uint8_t MAX_BRIGHTNESS;
-extern bool DEBUG_MODE;
 extern String AUTH_USER;
 extern String AUTH_PASS;
 extern String BUTTON_CALLBACK;
-#endif // Globals_H
+#endif  // Globals_H

@@ -189,8 +189,7 @@ void ServerManager_::setup()
     WiFi.setHostname(uniqueID); // define hostname
     myIP = mws.startWiFi(15000, uniqueID, "12345678");
     isConnected = !(myIP == IPAddress(192, 168, 4, 1));
-    if (DEBUG_MODE)
-        DEBUG_PRINTF("My IP: %d.%d.%d.%d", myIP[0], myIP[1], myIP[2], myIP[3]);
+    DEBUG_PRINTF("My IP: %d.%d.%d.%d", myIP[0], myIP[1], myIP[2], myIP[3]);
     mws.setAuth(AUTH_USER, AUTH_PASS);
     if (isConnected)
     {
@@ -222,7 +221,6 @@ void ServerManager_::setup()
         mws.addHandler("/save", HTTP_POST, saveHandler);
         addHandler();
         udp.begin(localUdpPort);
-        if (DEBUG_MODE)
             DEBUG_PRINTLN(F("Webserver loaded"));
     }
     mws.addHandler("/version", HTTP_GET, versionHandler);
@@ -230,7 +228,6 @@ void ServerManager_::setup()
 
     if (!MDNS.begin(MQTT_PREFIX))
     {
-        if (DEBUG_MODE)
             DEBUG_PRINTLN(F("Error starting mDNS"));
     }
     else
@@ -302,13 +299,11 @@ void ServerManager_::loadSettings()
 
         file.close();
         DisplayManager.applyAllSettings();
-        if (DEBUG_MODE)
             DEBUG_PRINTLN(F("Webserver configuration loaded"));
         doc.clear();
         return;
     }
-    else if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Webserver configuration file not exist"));
+    else DEBUG_PRINTLN(F("Webserver configuration file not exist"));
     return;
 }
 

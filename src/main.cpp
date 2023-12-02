@@ -51,7 +51,7 @@ void BootAnimation(void *parameter)
     {
       break;
     }
-    DisplayManager.HSVtext(4, 6, "FACHET", true, 0);
+    DisplayManager.HSVtext(4, 6, "T E S T", true, 0);
     vTaskDelay(xDelay);
   }
   vTaskDelete(NULL);

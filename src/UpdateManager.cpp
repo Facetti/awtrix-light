@@ -69,15 +69,15 @@ void UpdateManager_::updateFirmware()
     switch (ret)
     {
     case HTTP_UPDATE_FAILED:
-        if (DEBUG_MODE) DEBUG_PRINTF("HTTP_UPDATE_FAILED Error (%d): %s\n", httpUpdate.getLastError(), httpUpdate.getLastErrorString().c_str());
+        DEBUG_PRINTF("HTTP_UPDATE_FAILED Error (%d): %s\n", httpUpdate.getLastError(), httpUpdate.getLastErrorString().c_str());
         break;
 
     case HTTP_UPDATE_NO_UPDATES:
-        if (DEBUG_MODE) DEBUG_PRINTLN(F("HTTP_UPDATE_NO_UPDATES"));
+        DEBUG_PRINTLN(F("HTTP_UPDATE_NO_UPDATES"));
         break;
 
     case HTTP_UPDATE_OK:
-        if (DEBUG_MODE) DEBUG_PRINTLN(F("HTTP_UPDATE_OK"));
+        DEBUG_PRINTLN(F("HTTP_UPDATE_OK"));
         break;
     }
 }
@@ -98,7 +98,7 @@ bool UpdateManager_::checkUpdate(bool withScreen)
     fwurl += URL_fw_Version;
     fwurl += "?";
     fwurl += String(rand());
-    if (DEBUG_MODE) DEBUG_PRINTLN(F("Check firmwareversion"));
+    DEBUG_PRINTLN(F("Check firmwareversion"));
 
     static WiFiClientSecure client; // Statische Variable
 
@@ -116,7 +116,7 @@ bool UpdateManager_::checkUpdate(bool withScreen)
         }
         else
         {
-            if (DEBUG_MODE) DEBUG_PRINTLN(F("Error in downloading version file"));
+           DEBUG_PRINTLN(F("Error in downloading version file"));
             if (withScreen)
             {
                 DisplayManager.clear();
@@ -135,7 +135,7 @@ bool UpdateManager_::checkUpdate(bool withScreen)
         if (payload.equals(VERSION))
         {
             UPDATE_AVAILABLE = false;
-            if (DEBUG_MODE) DEBUG_PRINTF("\nDevice already on latest firmware version: %s\n", VERSION);
+            DEBUG_PRINTF("\nDevice already on latest firmware version: %s\n", VERSION);
             if (withScreen)
             {
                 DisplayManager.clear();
@@ -148,7 +148,7 @@ bool UpdateManager_::checkUpdate(bool withScreen)
         }
         else
         {
-            if (DEBUG_MODE) DEBUG_PRINTLN(F("New firmwareversion found!"));
+            DEBUG_PRINTLN(F("New firmwareversion found!"));
             UPDATE_AVAILABLE = true;
             return 1;
         }

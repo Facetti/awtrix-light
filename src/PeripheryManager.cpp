@@ -1,28 +1,31 @@
 #include <PeripheryManager.h>
 #ifdef awtrix2_upgrade
+#include <DFMiniMp3.h>
+
 #include "Adafruit_BME280.h"
 #include "Adafruit_BMP280.h"
 #include "Adafruit_HTU21DF.h"
 #include "SoftwareSerial.h"
-#include <DFMiniMp3.h>
 #else
-#include <melody_player.h>
 #include <melody_factory.h>
+#include <melody_player.h>
+
 #include "Adafruit_SHT31.h"
 #endif
-#include "Globals.h"
-#include "DisplayManager.h"
-#include "MQTTManager.h"
 #include <ArduinoJson.h>
-#include <LittleFS.h>
 #include <LightDependentResistor.h>
+#include <LittleFS.h>
 #include <MenuManager.h>
 #include <ServerManager.h>
-const int buzzerPin = 2;       // Buzzer an GPIO2
-const int baudRate = 50;       // Nachrichtenübertragungsrate
-const char *message = "HELLO"; // Die Nachricht, die gesendet werden soll
+
+#include "DisplayManager.h"
+#include "Globals.h"
+#include "MQTTManager.h"
+const int buzzerPin = 2;        // Buzzer an GPIO2
+const int baudRate = 50;        // Nachrichtenübertragungsrate
+const char *message = "HELLO";  // Die Nachricht, die gesendet werden soll
 #define LEDC_CHANNEL 0
-#define LEDC_RESOLUTION 8 // 8 bit resolution
+#define LEDC_RESOLUTION 8  // 8 bit resolution
 #define LEDC_TIMER LEDC_TIMER_0
 #define LEDC_MODE LEDC_LOW_SPEED_MODE
 
@@ -61,10 +64,9 @@ const char *message = "HELLO"; // Die Nachricht, die gesendet werden soll
 Adafruit_BME280 bme280;
 Adafruit_BMP280 bmp280;
 Adafruit_HTU21DF htu21df;
-class Mp3Notify
-{
+class Mp3Notify {
 };
-SoftwareSerial mySoftwareSerial(DFPLAYER_RX, DFPLAYER_TX); // RX, TX
+SoftwareSerial mySoftwareSerial(DFPLAYER_RX, DFPLAYER_TX);  // RX, TX
 DFMiniMp3<SoftwareSerial, Mp3Notify> dfmp3(mySoftwareSerial);
 #define USED_PHOTOCELL LightDependentResistor::GL5528
 #define PHOTOCELL_SERIES_RESISTOR 1000
@@ -102,8 +104,7 @@ float brightnessPercent = 0.0;
 int lastBrightness = 0;
 
 // The getter for the instantiated singleton instance
-PeripheryManager_ &PeripheryManager_::getInstance()
-{
+PeripheryManager_ &PeripheryManager_::getInstance() {
     static PeripheryManager_ instance;
     return instance;
 }
@@ -111,67 +112,47 @@ PeripheryManager_ &PeripheryManager_::getInstance()
 // Initialize the global shared instance
 PeripheryManager_ &PeripheryManager = PeripheryManager.getInstance();
 
-void left_button_pressed()
-{
-    if (!BLOCK_NAVIGATION)
-    {
+void left_button_pressed() {
+    if (!BLOCK_NAVIGATION) {
 #ifndef ULANZI
         PeripheryManager.playFromFile(DFMINI_MP3_CLICK);
 #endif
         DisplayManager.leftButton();
         MenuManager.leftButton();
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Left button clicked"));
-    }
-    else
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Left button clicked but blocked"));
+        DEBUG_PRINTLN(F("Left button clicked"));
+    } else {
+        DEBUG_PRINTLN(F("Left button clicked but blocked"));
     }
 }
 
-void right_button_pressed()
-{
-    if (!BLOCK_NAVIGATION)
-    {
+void right_button_pressed() {
+    if (!BLOCK_NAVIGATION) {
 #ifndef ULANZI
         PeripheryManager.playFromFile(DFMINI_MP3_CLICK);
 #endif
         DisplayManager.rightButton();
         MenuManager.rightButton();
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Right button clicked"));
-    }
-    else
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Right button clicked but blocked"));
+        DEBUG_PRINTLN(F("Right button clicked"));
+    } else {
+        DEBUG_PRINTLN(F("Right button clicked but blocked"));
     }
 }
 
-void select_button_pressed()
-{
-    if (!BLOCK_NAVIGATION)
-    {
+void select_button_pressed() {
+    if (!BLOCK_NAVIGATION) {
 #ifndef ULANZI
         PeripheryManager.playFromFile(DFMINI_MP3_CLICK);
 #endif
         DisplayManager.selectButton();
         MenuManager.selectButton();
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Select button clicked"));
-    }
-    else
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Select button clicked but blocked"));
+        DEBUG_PRINTLN(F("Select button clicked"));
+    } else {
+        DEBUG_PRINTLN(F("Select button clicked but blocked"));
     }
 }
 
-void select_button_pressed_long()
-{
-    if (AP_MODE)
-    {
+void select_button_pressed_long() {
+    if (AP_MODE) {
 #ifndef ULANZI
         PeripheryManager.playFromFile(DFMINI_MP3_CLICK);
         ++MATRIX_LAYOUT;
@@ -180,9 +161,7 @@ void select_button_pressed_long()
         saveSettings();
         ESP.restart();
 #endif
-    }
-    else if (!BLOCK_NAVIGATION)
-    {
+    } else if (!BLOCK_NAVIGATION) {
 #ifndef ULANZI
         PeripheryManager.playFromFile(DFMINI_MP3_CLICK);
 #endif
@@ -191,44 +170,32 @@ void select_button_pressed_long()
 
         DisplayManager.selectButtonLong();
 
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Select button pressed long"));
+        DEBUG_PRINTLN(F("Select button pressed long"));
     }
 }
 
-void select_button_double()
-{
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Select button double pressed"));
-    if (!BLOCK_NAVIGATION)
-    {
+void select_button_double() {
+    DEBUG_PRINTLN(F("Select button double pressed"));
+    if (!BLOCK_NAVIGATION) {
 #ifndef ULANZI
         PeripheryManager.playFromFile(DFMINI_MP3_CLICK);
 #endif
-        if (MATRIX_OFF)
-        {
+        if (MATRIX_OFF) {
             DisplayManager.setPower(true);
-        }
-        else
-        {
+        } else {
             DisplayManager.setPower(false);
         }
     }
 }
 
-void PeripheryManager_::playBootSound()
-{
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Playing bootsound"));
-    if (!SOUND_ACTIVE)
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Sound output disabled"));
+void PeripheryManager_::playBootSound() {
+    DEBUG_PRINTLN(F("Playing bootsound"));
+    if (!SOUND_ACTIVE) {
+        DEBUG_PRINTLN(F("Sound output disabled"));
         return;
     }
 
-    if (BOOT_SOUND == "")
-    {
+    if (BOOT_SOUND == "") {
 #ifdef ULANZI
         // no standard sound
         const int nNotes = 6;
@@ -239,15 +206,12 @@ void PeripheryManager_::playBootSound()
 #else
         playFromFile(DFMINI_MP3_BOOT);
 #endif
-    }
-    else
-    {
+    } else {
         playFromFile(BOOT_SOUND);
     }
 }
 
-void PeripheryManager_::stopSound()
-{
+void PeripheryManager_::stopSound() {
 #ifdef awtrix2_upgrade
     if (!DFPLAYER_ACTIVE)
         return;
@@ -260,33 +224,28 @@ void PeripheryManager_::stopSound()
 }
 
 #ifdef awtrix2_upgrade
-void PeripheryManager_::setVolume(uint8_t vol)
-{
+void PeripheryManager_::setVolume(uint8_t vol) {
     if (!DFPLAYER_ACTIVE)
         return;
-    uint8_t curVolume = dfmp3.getVolume(); // need to read volume in order to work. Donno why! :(
+    uint8_t curVolume = dfmp3.getVolume();  // need to read volume in order to work. Donno why! :(
     dfmp3.setVolume(vol);
     delay(50);
 }
 #endif
 
-bool PeripheryManager_::parseSound(const char *json)
-{
+bool PeripheryManager_::parseSound(const char *json) {
     StaticJsonDocument<128> doc;
     DeserializationError error = deserializeJson(doc, json);
-    if (error)
-    {
+    if (error) {
         return playFromFile(String(json));
     }
-    if (doc.containsKey("sound"))
-    {
+    if (doc.containsKey("sound")) {
         return playFromFile(doc["sound"].as<String>());
     }
     return false;
 }
 
-bool PeripheryManager_::playRTTTLString(String rtttl)
-{
+bool PeripheryManager_::playRTTTLString(String rtttl) {
 #ifdef awtrix2_upgrade
     return false;
 
@@ -297,14 +256,12 @@ bool PeripheryManager_::playRTTTLString(String rtttl)
 #endif
 }
 
-bool PeripheryManager_::playFromFile(String file)
-{
+bool PeripheryManager_::playFromFile(String file) {
     if (!SOUND_ACTIVE)
         return true;
 
 #ifdef awtrix2_upgrade
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Playing MP3 file"));
+    DEBUG_PRINTLN(F("Playing MP3 file"));
     if (!DFPLAYER_ACTIVE)
         return false;
     dfmp3.stop();
@@ -313,27 +270,22 @@ bool PeripheryManager_::playFromFile(String file)
 
     return true;
 #else
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Playing RTTTL sound file"));
-    if (LittleFS.exists("/MELODIES/" + String(file) + ".txt"))
-    {
+    DEBUG_PRINTLN(F("Playing RTTTL sound file"));
+    if (LittleFS.exists("/MELODIES/" + String(file) + ".txt")) {
         Melody melody = MelodyFactory.loadRtttlFile("/MELODIES/" + String(file) + ".txt");
         player.playAsync(melody);
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 #endif
 }
 
-bool PeripheryManager_::isPlaying()
-{
+bool PeripheryManager_::isPlaying() {
 #ifdef awtrix2_upgrade
     if (!DFPLAYER_ACTIVE)
         return false;
-    if ((dfmp3.getStatus() & 0xff) == 0x01) // 0x01 = DfMp3_StatusState_Playing
+    if ((dfmp3.getStatus() & 0xff) == 0x01)  // 0x01 = DfMp3_StatusState_Playing
         return true;
     else
         return false;
@@ -342,15 +294,12 @@ bool PeripheryManager_::isPlaying()
 #endif
 }
 
-void PeripheryManager_::setup()
-{
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Setup periphery"));
+void PeripheryManager_::setup() {
+    DEBUG_PRINTLN(F("Setup periphery"));
     startTime = millis();
     pinMode(LDR_PIN, INPUT);
 #ifdef awtrix2_upgrade
-    if (DFPLAYER_ACTIVE)
-    {
+    if (DFPLAYER_ACTIVE) {
         dfmp3.begin();
         delay(100);
         setVolume(VOLUME);
@@ -361,14 +310,11 @@ void PeripheryManager_::setup()
     button_right.begin();
     button_select.begin();
 
-    if (ROTATE_SCREEN)
-    {
+    if (ROTATE_SCREEN) {
         Serial.println("Button rotation");
         button_left.onPressed(right_button_pressed);
         button_right.onPressed(left_button_pressed);
-    }
-    else
-    {
+    } else {
         button_left.onPressed(left_button_pressed);
         button_right.onPressed(right_button_pressed);
     }
@@ -379,22 +325,14 @@ void PeripheryManager_::setup()
 
     Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
 #ifdef awtrix2_upgrade
-    if (bme280.begin(BME280_ADDRESS) || bme280.begin(BME280_ADDRESS_ALTERNATE))
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("BME280 sensor detected"));
+    if (bme280.begin(BME280_ADDRESS) || bme280.begin(BME280_ADDRESS_ALTERNATE)) {
+        DEBUG_PRINTLN(F("BME280 sensor detected"));
         TEMP_SENSOR_TYPE = TEMP_SENSOR_TYPE_BME280;
-    }
-    else if (bmp280.begin(BMP280_ADDRESS) || bmp280.begin(BMP280_ADDRESS_ALT))
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("BMP280 sensor detected"));
+    } else if (bmp280.begin(BMP280_ADDRESS) || bmp280.begin(BMP280_ADDRESS_ALT)) {
+        DEBUG_PRINTLN(F("BMP280 sensor detected"));
         TEMP_SENSOR_TYPE = TEMP_SENSOR_TYPE_BMP280;
-    }
-    else if (htu21df.begin())
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("HTU21DF sensor detected"));
+    } else if (htu21df.begin()) {
+        DEBUG_PRINTLN(F("HTU21DF sensor detected"));
         TEMP_SENSOR_TYPE = TEMP_SENSOR_TYPE_HTU21DF;
     }
     dfmp3.begin();
@@ -405,19 +343,14 @@ void PeripheryManager_::setup()
     photocell.setPhotocellPositionOnGround(false);
 }
 
-void PeripheryManager_::tick()
-{
-    if (!MenuManager.inMenu)
-    {
-        if (ROTATE_SCREEN)
-        {
+void PeripheryManager_::tick() {
+    if (!MenuManager.inMenu) {
+        if (ROTATE_SCREEN) {
             MQTTManager.sendButton(2, button_left.read());
             ServerManager.sendButton(2, button_left.read());
             MQTTManager.sendButton(0, button_right.read());
             ServerManager.sendButton(0, button_right.read());
-        }
-        else
-        {
+        } else {
             MQTTManager.sendButton(0, button_left.read());
             MQTTManager.sendButton(2, button_right.read());
             ServerManager.sendButton(0, button_left.read());
@@ -426,17 +359,14 @@ void PeripheryManager_::tick()
 
         MQTTManager.sendButton(1, button_select.read());
         ServerManager.sendButton(1, button_select.read());
-    }
-    else
-    {
+    } else {
         button_left.read();
         button_select.read();
         button_right.read();
     }
 
     unsigned long currentMillis_BatTempHum = millis();
-    if (currentMillis_BatTempHum - previousMillis_BatTempHum >= interval_BatTempHum)
-    {
+    if (currentMillis_BatTempHum - previousMillis_BatTempHum >= interval_BatTempHum) {
         previousMillis_BatTempHum = currentMillis_BatTempHum;
 #ifndef awtrix2_upgrade
         uint16_t ADCVALUE = analogRead(BATTERY_PIN);
@@ -450,27 +380,25 @@ void PeripheryManager_::tick()
 #else
         SENSORS_STABLE = true;
 #endif
-        if (SENSOR_READING)
-        {
+        if (SENSOR_READING) {
 #ifdef awtrix2_upgrade
-            switch (TEMP_SENSOR_TYPE)
-            {
-            case TEMP_SENSOR_TYPE_BME280:
-                CURRENT_TEMP = bme280.readTemperature();
-                CURRENT_HUM = bme280.readHumidity();
-                break;
-            case TEMP_SENSOR_TYPE_BMP280:
-                CURRENT_TEMP = bmp280.readTemperature();
-                CURRENT_HUM = 0;
-                break;
-            case TEMP_SENSOR_TYPE_HTU21DF:
-                CURRENT_TEMP = htu21df.readTemperature();
-                CURRENT_HUM = htu21df.readHumidity();
-                break;
-            default:
-                CURRENT_TEMP = 0;
-                CURRENT_HUM = 0;
-                break;
+            switch (TEMP_SENSOR_TYPE) {
+                case TEMP_SENSOR_TYPE_BME280:
+                    CURRENT_TEMP = bme280.readTemperature();
+                    CURRENT_HUM = bme280.readHumidity();
+                    break;
+                case TEMP_SENSOR_TYPE_BMP280:
+                    CURRENT_TEMP = bmp280.readTemperature();
+                    CURRENT_HUM = 0;
+                    break;
+                case TEMP_SENSOR_TYPE_HTU21DF:
+                    CURRENT_TEMP = htu21df.readTemperature();
+                    CURRENT_HUM = htu21df.readHumidity();
+                    break;
+                default:
+                    CURRENT_TEMP = 0;
+                    CURRENT_HUM = 0;
+                    break;
             }
 
 #else
@@ -482,32 +410,28 @@ void PeripheryManager_::tick()
     }
 
     unsigned long currentMillis_LDR = millis();
-    if (currentMillis_LDR - previousMillis_LDR >= interval_LDR)
-    {
+    if (currentMillis_LDR - previousMillis_LDR >= interval_LDR) {
         previousMillis_LDR = currentMillis_LDR;
         TotalLDRReadings[sampleIndex] = analogRead(LDR_PIN);
 
         sampleIndex = (sampleIndex + 1) % LDRReadings;
         sampleSum = 0.0;
-        for (int i = 0; i < LDRReadings; i++)
-        {
+        for (int i = 0; i < LDRReadings; i++) {
             sampleSum += TotalLDRReadings[i];
         }
         sampleAverage = sampleSum / (float)LDRReadings;
         LDR_RAW = sampleAverage;
         CURRENT_LUX = (roundf(photocell.getSmoothedLux() * 1000) / 1000);
-        if (AUTO_BRIGHTNESS && !MATRIX_OFF)
-        {
+        if (AUTO_BRIGHTNESS && !MATRIX_OFF) {
             brightnessPercent = sampleAverage / 1023.0 * 100.0;
-            brightnessPercent = (brightnessPercent * brightnessPercent * brightnessPercent) / (100.0 * 100.0); // apply gamma correction (gamma = 3)
+            brightnessPercent = (brightnessPercent * brightnessPercent * brightnessPercent) / (100.0 * 100.0);  // apply gamma correction (gamma = 3)
             BRIGHTNESS = map(brightnessPercent, 0, 100, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
             DisplayManager.setBrightness(BRIGHTNESS);
         }
     }
 }
 
-unsigned long long PeripheryManager_::readUptime()
-{
+unsigned long long PeripheryManager_::readUptime() {
     static unsigned long lastTime = 0;
     static unsigned long long totalElapsed = 0;
 
@@ -524,12 +448,9 @@ unsigned long long PeripheryManager_::readUptime()
     return uptimeSeconds;
 }
 
-
-void PeripheryManager_::r2d2(const char *msg)
-{
+void PeripheryManager_::r2d2(const char *msg) {
 #ifdef ULANZI
-    for (int i = 0; msg[i] != '\0'; i++)
-    {
+    for (int i = 0; msg[i] != '\0'; i++) {
         char c = msg[i];
         tone(BUZZER_PIN, (c - 'A' + 1) * 50);
         delay(baudRate + 10);

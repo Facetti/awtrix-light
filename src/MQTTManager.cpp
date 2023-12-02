@@ -161,14 +161,12 @@ void onNumberCommand(HANumeric number, HANumber *sender)
 
 void onMqttMessage(const char *topic, const uint8_t *payload, uint16_t length)
 {
-    if (DEBUG_MODE)
-        DEBUG_PRINTF("MQTT message received at topic %s", topic);
+    DEBUG_PRINTF("MQTT message received at topic %s", topic);
     String strTopic = String(topic);
     char *payloadCopy = new char[length + 1];
     memcpy(payloadCopy, payload, length);
     payloadCopy[length] = '\0';
-    if (DEBUG_MODE)
-        DEBUG_PRINTF("Payload:  %s", payloadCopy);
+    DEBUG_PRINTF("Payload:  %s", payloadCopy);
     ++RECEIVED_MESSAGES;
     if (strTopic.equals(MQTT_PREFIX + "/notify"))
     {
@@ -271,8 +269,7 @@ void onMqttMessage(const char *topic, const uint8_t *payload, uint16_t length)
         DeserializationError error = deserializeJson(doc, payload);
         if (error)
         {
-            if (DEBUG_MODE)
-                DEBUG_PRINTLN(F("Failed to parse json"));
+                    DEBUG_PRINTLN(F("Failed to parse json"));
             return;
         }
         if (doc.containsKey("power"))
@@ -290,8 +287,7 @@ void onMqttMessage(const char *topic, const uint8_t *payload, uint16_t length)
         DeserializationError error = deserializeJson(doc, payload);
         if (error)
         {
-            if (DEBUG_MODE)
-                DEBUG_PRINTLN(F("Failed to parse json"));
+                    DEBUG_PRINTLN(F("Failed to parse json"));
             return;
         }
         if (doc.containsKey("sleep"))
@@ -334,7 +330,6 @@ void onMqttMessage(const char *topic, const uint8_t *payload, uint16_t length)
 
     if (strTopic.equals(MQTT_PREFIX + "/reboot"))
     {
-        if (DEBUG_MODE)
             DEBUG_PRINTLN("REBOOT COMMAND RECEIVED")
         delay(1000);
         ESP.restart();
@@ -366,8 +361,7 @@ void onMqttMessage(const char *topic, const uint8_t *payload, uint16_t length)
 
 void onMqttConnected()
 {
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("MQTT Connected"));
+    DEBUG_PRINTLN(F("MQTT Connected"));
     const char *topics[] PROGMEM = {
         "/brightness",
         "/notify/dismiss",
@@ -395,7 +389,6 @@ void onMqttConnected()
         "/r2d2"};
     for (const char *topic : topics)
     {
-        if (DEBUG_MODE)
             DEBUG_PRINTF("Subscribe to topic %s", topic);
         mqtt.subscribe((MQTT_PREFIX + topic).c_str());
         delay(30);
@@ -430,13 +423,11 @@ void connect()
 
     if (MQTT_USER == "" || MQTT_PASS == "")
     {
-        if (DEBUG_MODE)
             DEBUG_PRINTLN(F("Connecting to MQTT w/o login"));
         mqtt.begin(MQTT_HOST.c_str(), MQTT_PORT, nullptr, nullptr, uniqueID);
     }
     else
     {
-        if (DEBUG_MODE)
             DEBUG_PRINTLN(F("Connecting to MQTT with login"));
         mqtt.begin(MQTT_HOST.c_str(), MQTT_PORT, MQTT_USER.c_str(), MQTT_PASS.c_str(), uniqueID);
     }
@@ -497,7 +488,6 @@ void MQTTManager_::setup()
 {
     if (HA_DISCOVERY)
     {
-        if (DEBUG_MODE)
             DEBUG_PRINTLN(F("Starting Homeassistant discovery"));
         mqtt.setDiscoveryPrefix(HA_PREFIX.c_str());
         mqtt.setDataPrefix(MQTT_PREFIX.c_str());
@@ -735,8 +725,7 @@ void MQTTManager_::setCurrentApp(String appName)
     if (lastApp == appName)
         return;
 
-    if (DEBUG_MODE)
-        DEBUG_PRINTF("Publish current app %s", appName.c_str());
+    DEBUG_PRINTF("Publish current app %s", appName.c_str());
     if (HA_DISCOVERY && mqtt.isConnected())
         curApp->setValue(appName.c_str());
 

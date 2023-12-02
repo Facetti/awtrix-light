@@ -25,8 +25,7 @@ void PowerManager_::sleepParser(const char *json)
   DeserializationError error = deserializeJson(doc, json);
   if (error)
   {
-    if (DEBUG_MODE)
-      DEBUG_PRINTLN(F("Failed to parse json"));
+DEBUG_PRINTLN(F("Failed to parse json"));
     return;
   }
 

@@ -1,31 +1,27 @@
 #include "Globals.h"
-#include "Preferences.h"
-#include <WiFi.h>
+
 #include <ArduinoJson.h>
 #include <LittleFS.h>
+#include <WiFi.h>
+
+#include "Preferences.h"
 #include "effects.h"
 
 Preferences Settings;
 
-char *getID()
-{
+char *getID() {
     uint8_t mac[6];
     WiFi.macAddress(mac);
     char *macStr = new char[24];
     snprintf(macStr, 24, "awtrix_%02x%02x%02x", mac[3], mac[4], mac[5]);
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Starting filesystem"));
+    DEBUG_PRINTLN(F("Starting filesystem"));
     return macStr;
 }
 
-void startLittleFS()
-{
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Starting filesystem"));
-    if (LittleFS.begin())
-    {
-        if (LittleFS.exists("/config.json"))
-        {
+void startLittleFS() {
+    DEBUG_PRINTLN(F("Starting filesystem"));
+    if (LittleFS.begin()) {
+        if (LittleFS.exists("/config.json")) {
             LittleFS.rename("/config.json", "/DoNotTouch.json");
         }
 
@@ -35,137 +31,107 @@ void startLittleFS()
         LittleFS.mkdir("/ICONS");
         LittleFS.mkdir("/PALETTES");
         LittleFS.mkdir("/CUSTOMAPPS");
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Filesystem started"));
-    }
-    else
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN(F("Filesystem corrupt. Formatting..."));
+        DEBUG_PRINTLN(F("Filesystem started"));
+    } else {
+        DEBUG_PRINTLN(F("Filesystem corrupt. Formatting..."));
         LittleFS.format();
         ESP.restart();
     }
 }
 
-void loadDevSettings()
-{
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN("Loading Devsettings");
-    if (LittleFS.exists("/dev.json"))
-    {
+void loadDevSettings() {
+    DEBUG_PRINTLN("Loading Devsettings");
+    if (LittleFS.exists("/dev.json")) {
         File file = LittleFS.open("/dev.json", "r");
         DynamicJsonDocument doc(1024);
         DeserializationError error = deserializeJson(doc, file);
-        if (error)
-        {
-            if (DEBUG_MODE)
-                DEBUG_PRINTLN(F("Failed to read dev settings"));
+        if (error) {
+            DEBUG_PRINTLN(F("Failed to read dev settings"));
             return;
         }
 
-        if (DEBUG_MODE)
-            DEBUG_PRINTF("%i dev settings found", doc.size());
+        DEBUG_PRINTF("%i dev settings found", doc.size());
 
-        if (doc.containsKey("bootsound"))
-        {
+        if (doc.containsKey("bootsound")) {
             BOOT_SOUND = doc["bootsound"].as<String>();
         }
 
-        if (doc.containsKey("sensor_reading"))
-        {
+        if (doc.containsKey("sensor_reading")) {
             SENSOR_READING = doc["sensor_reading"].as<bool>();
         }
 
-        if (doc.containsKey("dfplayer"))
-        {
+        if (doc.containsKey("dfplayer")) {
             DFPLAYER_ACTIVE = doc["dfplayer"].as<bool>();
         }
 
-        if (doc.containsKey("matrix"))
-        {
+        if (doc.containsKey("matrix")) {
             MATRIX_LAYOUT = doc["matrix"];
         }
 
-        if (doc.containsKey("mirror_screen"))
-        {
+        if (doc.containsKey("mirror_screen")) {
             MIRROR_DISPLAY = doc["mirror_screen"].as<bool>();
         }
 
-        if (doc.containsKey("temp_offset"))
-        {
+        if (doc.containsKey("temp_offset")) {
             TEMP_OFFSET = doc["temp_offset"];
         }
 
-        if (doc.containsKey("min_battery"))
-        {
+        if (doc.containsKey("min_battery")) {
             MIN_BATTERY = doc["min_battery"];
         }
 
-        if (doc.containsKey("max_battery"))
-        {
+        if (doc.containsKey("max_battery")) {
             MAX_BATTERY = doc["max_battery"];
         }
 
-        if (doc.containsKey("background_effect"))
-        {
-            BACKGROUND_EFFECT = getEffectIndex(doc["background_effect"].as<const char *>());
+        if (doc.containsKey("background_effect")) {
+            BACKGROUND_EFFECT =
+                getEffectIndex(doc["background_effect"].as<const char *>());
         }
 
-        if (doc.containsKey("min_brightness"))
-        {
+        if (doc.containsKey("min_brightness")) {
             MIN_BRIGHTNESS = doc["min_brightness"];
         }
 
-        if (doc.containsKey("max_brightness"))
-        {
+        if (doc.containsKey("max_brightness")) {
             MAX_BRIGHTNESS = doc["max_brightness"];
         }
 
-        if (doc.containsKey("hum_offset"))
-        {
+        if (doc.containsKey("hum_offset")) {
             HUM_OFFSET = doc["hum_offset"];
         }
 
-        if (doc.containsKey("ha_prefix"))
-        {
+        if (doc.containsKey("ha_prefix")) {
             HA_PREFIX = doc["ha_prefix"].as<String>();
         }
 
-        if (doc.containsKey("stats_interval"))
-        {
+        if (doc.containsKey("stats_interval")) {
             STATS_INTERVAL = doc["stats_interval"].as<long>();
         }
 
-        if (doc.containsKey("update_check"))
-        {
+        if (doc.containsKey("update_check")) {
             UPDATE_CHECK = doc["update_check"].as<bool>();
         }
 
-        if (doc.containsKey("temp_dec_places"))
-        {
+        if (doc.containsKey("temp_dec_places")) {
             TEMP_DECIMAL_PLACES = doc["temp_dec_places"].as<int>();
         }
 
-        if (doc.containsKey("rotate_screen"))
-        {
+        if (doc.containsKey("rotate_screen")) {
             ROTATE_SCREEN = doc["rotate_screen"].as<bool>();
         }
 
-        if (doc.containsKey("debug_mode"))
-        {
-            DEBUG_MODE = doc["debug_mode"].as<bool>();
-        }
+       // if (doc.containsKey("debug_mode")) {
+       //     DEBUG_MODE = doc["debug_mode"].as<bool>();
+       // }
 
-         if (doc.containsKey("button_callback"))
-        {
+        if (doc.containsKey("button_callback")) {
             BUTTON_CALLBACK = doc["button_callback"].as<String>();
         }
 
-        if (doc.containsKey("color_correction"))
-        {
+        if (doc.containsKey("color_correction")) {
             auto correction = doc["color_correction"];
-            if (correction.is<JsonArray>() && correction.size() == 3)
-            {
+            if (correction.is<JsonArray>() && correction.size() == 3) {
                 uint8_t r = correction[0];
                 uint8_t g = correction[1];
                 uint8_t b = correction[2];
@@ -173,11 +139,9 @@ void loadDevSettings()
             }
         }
 
-        if (doc.containsKey("color_temperature"))
-        {
+        if (doc.containsKey("color_temperature")) {
             auto temperature = doc["color_temperature"];
-            if (temperature.is<JsonArray>() && temperature.size() == 3)
-            {
+            if (temperature.is<JsonArray>() && temperature.size() == 3) {
                 uint8_t r = temperature[0];
                 uint8_t g = temperature[1];
                 uint8_t b = temperature[2];
@@ -186,26 +150,20 @@ void loadDevSettings()
         }
 
         file.close();
-    }
-    else
-    {
-        if (DEBUG_MODE)
-            DEBUG_PRINTLN("Devsettings not found");
+    } else {
+        DEBUG_PRINTLN("Devsettings not found");
     }
 }
 
-void formatSettings()
-{
+void formatSettings() {
     Settings.begin("awtrix", false);
     Settings.clear();
     Settings.end();
 }
 
-void loadSettings()
-{
+void loadSettings() {
     startLittleFS();
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Loading Usersettings"));
+    DEBUG_PRINTLN(F("Loading Usersettings"));
     Settings.begin("awtrix", false);
     BRIGHTNESS = Settings.getUInt("BRI", 120);
     AUTO_BRIGHTNESS = Settings.getBool("ABRI", false);
@@ -220,6 +178,7 @@ void loadSettings()
     DATE_COLOR = Settings.getUInt("DATE_COL", 0);
     TEMP_COLOR = Settings.getUInt("TEMP_COL", 0);
     HUM_COLOR = Settings.getUInt("HUM_COL", 0);
+    CNT_COLOR = Settings.getUInt("CNT_COL", 0);
 #ifdef ULANZI
     BAT_COLOR = Settings.getUInt("BAT_COL", 0);
 #endif
@@ -238,6 +197,8 @@ void loadSettings()
     SHOW_DATE = Settings.getBool("DAT", false);
     SHOW_TEMP = Settings.getBool("TEMP", true);
     SHOW_HUM = Settings.getBool("HUM", true);
+    SHOW_CNT = Settings.getBool("CNT", true);
+    CURRENT_CNT = Settings.getString("GOAL", "2023-06-15");
     MATRIX_LAYOUT = Settings.getUInt("MAT", 0);
     SCROLL_SPEED = Settings.getUInt("SSPEED", 100);
 #ifdef ULANZI
@@ -254,10 +215,9 @@ void loadSettings()
     loadDevSettings();
 }
 
-void saveSettings()
-{
-    if (DEBUG_MODE)
-        DEBUG_PRINTLN(F("Saving usersettings"));
+void saveSettings() {
+
+    DEBUG_PRINTLN(F("Saving usersettings"));
     Settings.begin("awtrix", false);
     Settings.putUInt("CHCOL", CALENDAR_HEADER_COLOR);
     Settings.putUInt("CTCOL", CALENDAR_TEXT_COLOR);
@@ -275,6 +235,7 @@ void saveSettings()
     Settings.putUInt("DATE_COL", DATE_COLOR);
     Settings.putUInt("TEMP_COL", TEMP_COLOR);
     Settings.putUInt("HUM_COL", HUM_COLOR);
+    Settings.putUInt("CNT_COL", CNT_COLOR);
 #ifdef ULANZI
     Settings.putUInt("BAT_COL", BAT_COLOR);
 #endif
@@ -290,6 +251,8 @@ void saveSettings()
     Settings.putBool("DAT", SHOW_DATE);
     Settings.putBool("TEMP", SHOW_TEMP);
     Settings.putBool("HUM", SHOW_HUM);
+    Settings.putBool("CNT", SHOW_CNT);
+    Settings.putString("GOAL", CURRENT_CNT);
     Settings.putUInt("SSPEED", SCROLL_SPEED);
 #ifdef ULANZI
     Settings.putBool("BAT", SHOW_BAT);
@@ -323,6 +286,7 @@ bool SHOW_WEATHER = true;
 bool SHOW_BAT = true;
 bool SHOW_TEMP = true;
 bool SHOW_HUM = true;
+bool SHOW_CNT = true;
 bool SHOW_SECONDS = true;
 bool SHOW_WEEKDAY = true;
 String NET_IP = "192.168.178.10";
@@ -348,6 +312,8 @@ float CURRENT_HUM;
 float CURRENT_LUX;
 int BRIGHTNESS = 120;
 int BRIGHTNESS_PERCENT;
+
+String CURRENT_CNT = "2023-06-15";
 
 uint16_t MIN_BATTERY = 475;
 uint16_t MAX_BATTERY = 665;
@@ -405,10 +371,11 @@ uint32_t DATE_COLOR = 0;
 uint32_t BAT_COLOR = 0;
 uint32_t TEMP_COLOR = 0;
 uint32_t HUM_COLOR = 0;
+uint32_t CNT_COLOR = 0;
+
 bool ARTNET_MODE;
 bool MOODLIGHT_MODE;
 long STATS_INTERVAL = 10000;
-bool DEBUG_MODE = false;
 uint8_t MIN_BRIGHTNESS = 2;
 uint8_t MAX_BRIGHTNESS = 160;
 double movementFactor = 0.5;
