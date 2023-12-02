@@ -51,7 +51,7 @@ void BootAnimation(void *parameter)
     {
       break;
     }
-    DisplayManager.HSVtext(4, 6, "AWTRIX", true, 0);
+    DisplayManager.HSVtext(4, 6, "FACHET", true, 0);
     vTaskDelay(xDelay);
   }
   vTaskDelete(NULL);
@@ -81,7 +81,7 @@ void setup()
     float x = 4;
     while (x >= -85)
     {
-      DisplayManager.HSVtext(x, 6, ("AWTRIX   " + ServerManager.myIP.toString()).c_str(), true, 0);
+      DisplayManager.HSVtext(x, 6, ("AMTRIX   " + ServerManager.myIP.toString()).c_str(), true, 0);
       x -= 0.18;
     }
     if (MQTT_HOST != "")
