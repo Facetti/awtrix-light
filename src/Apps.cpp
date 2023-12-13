@@ -263,7 +263,7 @@ void BatApp(FastLED_NeoMatrix *matrix, MatrixDisplayUiState *state, int16_t x, i
     } else {
         DisplayManager.getInstance().resetTextColor();
     }
-    matrix->drawRGBBitmap(x, y, icon_1486, 8, 8);
+    matrix->drawRGBBitmap(x, y, icon_1487, 8, 8);
     DisplayManager.setCursor(14 + x, 6 + y);
     DisplayManager.matrixPrint(BATTERY_PERCENT, 0);  // Ausgabe des Ladezustands
     DisplayManager.matrixPrint("%");
