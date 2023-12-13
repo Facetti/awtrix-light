@@ -21,10 +21,10 @@ HASwitch *transition = nullptr;
 #ifndef awtrix2_upgrade
 HASensor *battery = nullptr;
 #endif
-HASensor *temperature, *humidity, *illuminance, *uptime, *strength, *version, *ram, *curApp, *myOwnID, *ipAddr = nullptr;
+HASensor *temperature, *humidity, *counter, *illuminance, *uptime, *strength, *version, *ram, *curApp, *myOwnID, *ipAddr = nullptr;
 HABinarySensor *btnleft, *btnmid, *btnright = nullptr;
 bool connected;
-char matID[40], ind1ID[40], ind2ID[40], ind3ID[40], briID[40], btnAID[40], btnBID[40], btnCID[40], appID[40], tempID[40], humID[40], luxID[40], verID[40], ramID[40], upID[40], sigID[40], btnLID[40], btnMID[40], btnRID[40], transID[40], doUpdateID[40], batID[40], myID[40], sSpeed[40], effectID[40], ipAddrID[40];
+char matID[40], ind1ID[40], ind2ID[40], ind3ID[40], briID[40], btnAID[40], btnBID[40], btnCID[40], appID[40], tempID[40], humID[40], cntID[40], luxID[40], verID[40], ramID[40], upID[40], sigID[40], btnLID[40], btnMID[40], btnRID[40], transID[40], doUpdateID[40], batID[40], myID[40], sSpeed[40], effectID[40], ipAddrID[40];
 long previousMillis_Stats;
 // The getter for the instantiated singleton instance
 MQTTManager_ &MQTTManager_::getInstance()
@@ -488,7 +488,7 @@ void MQTTManager_::setup()
 {
     if (HA_DISCOVERY)
     {
-            DEBUG_PRINTLN(F("Starting Homeassistant discovery"));
+        DEBUG_PRINTLN(F("Starting Homeassistant discovery"));
         mqtt.setDiscoveryPrefix(HA_PREFIX.c_str());
         mqtt.setDataPrefix(MQTT_PREFIX.c_str());
         uint8_t mac[6];
@@ -617,6 +617,13 @@ void MQTTManager_::setup()
         humidity->setName(HAhumName);
         humidity->setDeviceClass(HAhumClass);
         humidity->setUnitOfMeasurement(HAhumUnit);
+
+
+        sprintf(cntID, HAcntID, macStr);
+        counter = new HASensor(cntID);
+        counter->setIcon(HAcntIcon);
+        counter->setName(HAcntName);
+        counter->setDeviceClass(HAcntClass);
 
 #ifdef ULANZI
         sprintf(batID, HAbatID, macStr);

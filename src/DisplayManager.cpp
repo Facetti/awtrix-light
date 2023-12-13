@@ -1334,6 +1334,7 @@ String DisplayManager_::getStats() {
         doc[TempKey] = formattedTemp;
         doc[HumKey] = static_cast<uint8_t>(CURRENT_HUM);
     }
+	doc[CntKey] = COUNTER;
     doc[UpTimeKey] = PeripheryManager.readUptime();
     doc[SignalStrengthKey] = WiFi.RSSI();
     doc[MessagesKey] = RECEIVED_MESSAGES;
@@ -1653,7 +1654,7 @@ String DisplayManager_::getSettings() {
     doc["TFORMAT"] = TIME_FORMAT;
     doc["DFORMAT"] = DATE_FORMAT;
     doc["SOM"] = START_ON_MONDAY;
-    doc["GOAL"] = CURRENT_CNT;
+    doc["GOAL"] = COUNTER;
     doc["CEL"] = IS_CELSIUS;
     doc["BLOCKN"] = BLOCK_NAVIGATION;
     doc["MAT"] = MATRIX_LAYOUT;

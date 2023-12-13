@@ -1,3 +1,4 @@
+#define FASTLED_INTERNAL //remove annoying pragma messages
 #include <Arduino.h>
 #include <DisplayManager.h>
 #include <Globals.h>
@@ -206,7 +207,7 @@ String MenuManager_::menutext() {
                     DisplayManager.drawBMP(0, 0, icon_2075, 8, 8);
                     return SHOW_HUM ? "ON" : "OFF";
                 case 4:
-                    DisplayManager.drawBMP(0, 0, icon_13, 8, 8);
+                    DisplayManager.drawBMP(0, 0, icon_47646, 8, 8);
                     return SHOW_CNT ? "ON" : "OFF";
 #ifndef awtrix2_upgrade
                 case 5:
@@ -267,7 +268,6 @@ void MenuManager_::rightButton() {
             IS_CELSIUS = !IS_CELSIUS;
             break;
         case CntMenu: 
-			DEBUG_PRINTF("CNT actual %d.%d.%d", CntGoal.tm_mday, CntGoal.tm_mon, CntGoal.tm_year);
             if (CntState == 0)
 				CntGoal.tm_year++;
 			else if (CntState == 1)
@@ -275,7 +275,6 @@ void MenuManager_::rightButton() {
 			else 
 				CntGoal.tm_mday++;
 			mktime(&CntGoal);
-			DEBUG_PRINTF("CNT new: %d.%d.%d", CntGoal.tm_mday, CntGoal.tm_mon, CntGoal.tm_year);
 			break;
 		case AppMenu:
             appsIndex = (appsIndex + 1) % appsCount;
@@ -347,16 +346,14 @@ void MenuManager_::leftButton() {
             else
                 VOLUME_PERCENT--;
 #endif
-        case CntMenu:
-			DEBUG_PRINTF("CNT actual %d.%d.%d", CntGoal.tm_mday, CntGoal.tm_mon, CntGoal.tm_year);
+        case CntMenu:			
             if (CntState == 0)
 				CntGoal.tm_year--;
 			else if (CntState == 1)
 				CntGoal.tm_mon--;
 			else 
 				CntGoal.tm_mday--; 
-			mktime(&CntGoal);
-			DEBUG_PRINTF("CNT new: %d.%d.%d", CntGoal.tm_mday, CntGoal.tm_mon, CntGoal.tm_year);
+				mktime(&CntGoal);
 			break;
         default:
             break;
@@ -405,8 +402,7 @@ void MenuManager_::selectButton() {
                     break;
                 case TempMenu:
                     currentState = CntMenu;
-					strptime(CURRENT_CNT.c_str(), "%F", &CntGoal);
-					DEBUG_PRINTF("Select CntMenu: %s -> %d %d %d", CURRENT_CNT.c_str(), CntGoal.tm_mday, CntGoal.tm_mon, CntGoal.tm_year)
+					strptime(COUNTER.c_str(), "%F", &CntGoal);
                     break;
                 case CntMenu:
                     currentState = AppMenu;
@@ -521,8 +517,7 @@ void MenuManager_::selectButtonLong() {
 #endif
             case CntMenu:
 				strftime(t, sizeof(t), "%F", &CntGoal);
-				CURRENT_CNT = t;
-				DEBUG_PRINTF("Out CntMenu: %s -> %s -> %d %d %d", t, CURRENT_CNT.c_str(), CntGoal.tm_mday, CntGoal.tm_mon, CntGoal.tm_year)
+				COUNTER = t;
                 saveSettings();
                 break;
             default:

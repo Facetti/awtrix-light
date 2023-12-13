@@ -1,6 +1,8 @@
 #ifndef PeripheryManager_h
 #define PeripheryManager_h
 
+#define FASTLED_INTERNAL //remove annoying pragma messages
+
 #include <Arduino.h>
 #include <EasyButton.h>
 #ifndef ULANZI

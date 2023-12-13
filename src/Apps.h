@@ -1,6 +1,7 @@
 #ifndef AppS_H
 #define AppS_H
 
+#define FASTLED_INTERNAL //remove annoying pragma messages
 #include <map>
 #include "MatrixDisplayUi.h"
 #include "effects.h"

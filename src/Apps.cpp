@@ -223,9 +223,9 @@ void HumApp(FastLED_NeoMatrix *matrix, MatrixDisplayUiState *state, int16_t x, i
 }
 
 void CounterApp(FastLED_NeoMatrix *matrix, MatrixDisplayUiState *state, int16_t x, int16_t y, GifPlayer *gifPlayer) {
-	time_t now;
-	struct tm goal, *nowp;
-	
+	time_t now_t;
+	struct tm goal, now;
+
     if (notifyFlag)
         return;
     CURRENT_APP = "Counter";
@@ -237,19 +237,15 @@ void CounterApp(FastLED_NeoMatrix *matrix, MatrixDisplayUiState *state, int16_t 
         DisplayManager.getInstance().resetTextColor();
     }
 
-	matrix->drawRGBBitmap(x, y + 1, icon_2075, 8, 8);
+	matrix->drawRGBBitmap(x, y, icon_47646, 8, 8);
 
-	strptime(CURRENT_CNT.c_str(), "%F", &goal);
-	time(&now);
-	nowp = localtime(&now);
+	now_t = time(nullptr);
+	gmtime_r(&now_t, &now); 
+	goal = now;  // initialize 
+	strptime(COUNTER.c_str(), "%F", &goal);
 	
-	goal.tm_hour = nowp->tm_hour;
-	goal.tm_min = nowp->tm_min;
-	goal.tm_sec = nowp->tm_sec;
-
     DisplayManager.setCursor(14 + x, 6 + y);
-    DisplayManager.matrixPrint(difftime(mktime(&goal), mktime(nowp)) / 96400, 0); //sec -> days
-	DEBUG_PRINTF("CounterApp: now %ld goal %ld = %d days", mktime(&goal), mktime(nowp), (int) difftime(mktime(&goal), mktime(nowp)) / 96400);
+    DisplayManager.matrixPrint((int) difftime(mktime(&goal), mktime(&now)) / 86400, 0); //sec -> days
 }
 
 #ifndef awtrix2_upgrade
@@ -263,7 +259,7 @@ void BatApp(FastLED_NeoMatrix *matrix, MatrixDisplayUiState *state, int16_t x, i
     } else {
         DisplayManager.getInstance().resetTextColor();
     }
-    matrix->drawRGBBitmap(x, y, icon_1487, 8, 8);
+    matrix->drawRGBBitmap(x, y, icon_1486, 8, 8);
     DisplayManager.setCursor(14 + x, 6 + y);
     DisplayManager.matrixPrint(BATTERY_PERCENT, 0);  // Ausgabe des Ladezustands
     DisplayManager.matrixPrint("%");

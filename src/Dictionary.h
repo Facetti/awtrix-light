@@ -76,6 +76,12 @@ extern const char HAhumName[];
 extern const char HAhumClass[];
 extern const char HAhumUnit[];
 
+extern const char HAcntID[];
+extern const char HAcntIcon[];
+extern const char HAcntName[];
+extern const char HAcntClass[];
+extern const char HAcntUnit[];
+
 #ifdef ULANZI
 extern const char HAbatID[];
 extern const char HAbatIcon[];
@@ -147,6 +153,7 @@ extern const char LDRRawKey[];
 extern const char BrightnessKey[];
 extern const char TempKey[];
 extern const char HumKey[];
+extern const char CntKey[];
 extern const char UpTimeKey[];
 extern const char SignalStrengthKey[];
 extern const char UpdateKey[];

@@ -1,6 +1,8 @@
 #ifndef DisplayManager_h
 #define DisplayManager_h
 
+#define FASTLED_INTERNAL //remove annoying pragma messages
+
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <LittleFS.h>

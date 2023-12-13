@@ -198,7 +198,7 @@ void loadSettings() {
     SHOW_TEMP = Settings.getBool("TEMP", true);
     SHOW_HUM = Settings.getBool("HUM", true);
     SHOW_CNT = Settings.getBool("CNT", true);
-    CURRENT_CNT = Settings.getString("GOAL", "2023-06-15");
+    COUNTER = Settings.getString("GOAL", "2023-06-15");
     MATRIX_LAYOUT = Settings.getUInt("MAT", 0);
     SCROLL_SPEED = Settings.getUInt("SSPEED", 100);
 #ifdef ULANZI
@@ -252,7 +252,7 @@ void saveSettings() {
     Settings.putBool("TEMP", SHOW_TEMP);
     Settings.putBool("HUM", SHOW_HUM);
     Settings.putBool("CNT", SHOW_CNT);
-    Settings.putString("GOAL", CURRENT_CNT);
+    Settings.putString("GOAL", COUNTER);
     Settings.putUInt("SSPEED", SCROLL_SPEED);
 #ifdef ULANZI
     Settings.putBool("BAT", SHOW_BAT);
@@ -270,7 +270,7 @@ IPAddress gateway;
 IPAddress subnet;
 IPAddress primaryDNS;
 IPAddress secondaryDNS;
-const char *VERSION = "0.91";
+const char *VERSION = "0.92";
 
 String MQTT_HOST = "";
 uint16_t MQTT_PORT = 1883;
@@ -313,7 +313,7 @@ float CURRENT_LUX;
 int BRIGHTNESS = 120;
 int BRIGHTNESS_PERCENT;
 
-String CURRENT_CNT = "2023-06-15";
+String COUNTER = "2023-06-15";
 
 uint16_t MIN_BATTERY = 475;
 uint16_t MAX_BATTERY = 665;

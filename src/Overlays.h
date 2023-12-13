@@ -1,6 +1,7 @@
 #ifndef Overlays_H
 #define Overlays_H
 
+#define FASTLED_INTERNAL //remove annoying pragma messages
 #include "MatrixDisplayUi.h"
 
 uint32_t TextEffect(uint32_t color, uint32_t fade, uint32_t blink);

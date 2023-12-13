@@ -1,6 +1,7 @@
 #ifndef ServerManager_h
 #define ServerManager_h
 
+#define FASTLED_INTERNAL //remove annoying pragma messages
 #include <Arduino.h>
 
 class ServerManager_

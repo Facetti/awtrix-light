@@ -78,6 +78,11 @@ const char HAhumName[] PROGMEM = {"Humidity"};
 const char HAhumClass[] PROGMEM = {"humidity"};
 const char HAhumUnit[] PROGMEM = {"%"};
 
+const char HAcntID[] PROGMEM = {"%s_cnt"};
+const char HAcntIcon[] PROGMEM = {"mdi:counter"};
+const char HAcntName[] PROGMEM = {"Counter"};
+const char HAcntClass[] PROGMEM = {"counter"};
+
 const char HAbatID[] PROGMEM = {"%s_bat"};
 const char HAbatIcon[] PROGMEM = {"mdi:battery-90"};
 const char HAbatName[] PROGMEM = {"Battery"};
@@ -152,6 +157,7 @@ const char LDRRawKey[] PROGMEM = {"ldr_raw"};
 const char BrightnessKey[] PROGMEM = {"bri"};
 const char TempKey[] PROGMEM = {"temp"};
 const char HumKey[] PROGMEM = {"hum"};
+const char CntKey[] PROGMEM = {"counter"};
 const char UpTimeKey[] PROGMEM = {"uptime"};
 const char SignalStrengthKey[] PROGMEM = {"wifi_signal"};
 const char UpdateKey[] PROGMEM = {"up_available"};

@@ -1,5 +1,6 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
+#define FASTLED_INTERNAL //remove annoying pragma messages
 #include <Arduino.h>
 #include <FastLED.h>
 
@@ -66,7 +67,7 @@ extern bool DFPLAYER_ACTIVE;
 extern float CURRENT_TEMP;
 extern float CURRENT_HUM;
 extern float CURRENT_LUX;
-extern String CURRENT_CNT;
+extern String COUNTER;
 extern uint16_t LDR_RAW;
 extern String CURRENT_APP;
 extern int BACKGROUND_EFFECT;
