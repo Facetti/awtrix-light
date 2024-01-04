@@ -6,8 +6,8 @@
   "MD033": false,
   "MD041": false
 } -->
-# This branch adds an build-in app "counter" which shows the remaining days until a specific date e.g. deadline. 
-This branch was made because I'm not so familiar with GitHub. If someone is interessted helping me to bring this into the main branch of blueforcer please contact me :-)
+# This branch adds an build-in app "COUNTER" which shows the remaining days until a specific date e.g. deadline. 
+This branch was created because I'm not that familiar with GitHub. If anyone interested in helping me bring this into the main branch of blueforcer, please contact me :-)
 <div align="center">
   
 ![Alt text](/logo.png?raw=true "Title")
